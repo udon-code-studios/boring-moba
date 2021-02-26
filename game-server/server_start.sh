@@ -2,8 +2,6 @@
 
 # file: spp_web_start.sh
 #
-# description...
-#
 
 # make sure this script is run as root
 #
@@ -24,7 +22,7 @@ fi
 #
 sudo docker build -t boring_moba_server .
 
-# start webserver
+# start server
 #  --detach  Run container in background and print container ID
 #  --rm      Automatically remove the container when it exits
 #  --publish Describe which port the container is listening on at runtime

@@ -15,7 +15,7 @@ fi
 
 # stop webserver
 #
-sudo docker stop spp_webserver
+sudo docker stop boring_moba_server
 
 # exit normally
 #
