@@ -1,5 +1,6 @@
 # file: Dockerfile
 #
+#
 
 FROM golang:latest
 ENV GOBIN /go/bin
