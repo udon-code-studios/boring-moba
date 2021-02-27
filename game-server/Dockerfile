@@ -10,7 +10,7 @@ RUN go build src/server.go
 
 CMD ["./server"]
 
-EXPOSE 8080
+EXPOSE 5000
 
 #
 # end of file

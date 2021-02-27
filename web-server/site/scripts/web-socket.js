@@ -10,7 +10,7 @@ var print = function(message) {
 };
 
 document.getElementById("open").onclick = function(evt) {
-  ws = new WebSocket("ws://subparprogramming.cf:8080/echo");
+  ws = new WebSocket("ws://subparprogramming.cf:5000/echo");
 
   ws.onopen = function(event) {
     print("OPEN");

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # file: spp_web_start.sh
 #
@@ -32,7 +32,7 @@ sudo docker build -t boring_moba_server .
 sudo docker run \
      -d \
      --rm \
-     -p 8080:8080 \
+     -p 5000:5000 \
      --name boring_moba_server \
      boring_moba_server
 
