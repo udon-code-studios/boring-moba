@@ -56,13 +56,11 @@ func (g *Game) updateGameState() {
 
 func (g *Game) handlePlayerInput() {
 	for {
-		if len(g.GameState.Players) > 0 {
-			select {
-			case input := <-(g.PlayerInputs):
-				for i := 0; i < len(g.GameState.Players); i++ {
-					if g.GameState.Players[i].Id == input.Id {
-						g.GameState.Players[i].TargetPosition = input.NewTargetPosition
-					}
+		select {
+		case input := <-(g.PlayerInputs):
+			for i := 0; i < len(g.GameState.Players); i++ {
+				if g.GameState.Players[i].Id == input.Id {
+					g.GameState.Players[i].TargetPosition = input.NewTargetPosition
 				}
 			}
 		}

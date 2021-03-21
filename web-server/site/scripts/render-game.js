@@ -27,7 +27,6 @@ function draw() {
 // connection variables
 var ws; // WebSocket connection to game server
 var wsConnected;
-var sendTime;
 
 // connect to game server and setup websocket methods
 document.getElementById("connect").onclick = function(evt) {
@@ -52,10 +51,7 @@ document.getElementById("connect").onclick = function(evt) {
   ws.onmessage = function(evt) {
     var messageData = JSON.parse(evt.data);
     console.log(messageData);
-    if (messageData.type == "response") {
-      document.getElementById("gameConnectionStatus").innerHTML = `Connected (${(Date.now() - sendTime)} ms)`;
-    }
-    else if (messageData.type == "players") {
+    if (messageData.type == "players") {
       players = messageData.players;
       draw();
     }
@@ -87,10 +83,11 @@ document.addEventListener("mousedown", e => {
       document.getElementById("mouseDownStatus").innerHTML = 'Middle button clicked.';
       break;
     case 2:
+      var location = getCursorPosition(canvas, e)
+      console.log(location)
       document.getElementById("mouseDownStatus").innerHTML = 'Right button clicked.';
       if (wsConnected) {
-        sendTime = Date.now();
-        ws.send(`id: ${player.id} right clicked`);
+        ws.send(JSON.stringify({'id': player.id, 'newTargetPosition': location}));
       }
       break;
     default:
@@ -108,4 +105,11 @@ async function getPlayerID(data) {
   });
 
   return response.json();
+}
+
+function getCursorPosition(canvas, event) {
+    const rect = canvas.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    return {'x': x, 'y': y}
 }

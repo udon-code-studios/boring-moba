@@ -35,6 +35,8 @@ var upgrader = websocket.Upgrader{
 
 // Client is a middleman between the websocket connection and the hub.
 type Client struct {
+	id int
+
 	hub *Hub
 
 	// The websocket connection.
@@ -118,6 +120,9 @@ func (c *Client) writePump() {
 
 // serveWs handles websocket requests from the peer.
 func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
+	// allow requests from anyone
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)

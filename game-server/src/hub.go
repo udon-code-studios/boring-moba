@@ -1,5 +1,10 @@
 package main
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 // Hub maintains the set of active clients and broadcasts messages to the
 // clients.
 type Hub struct {
@@ -36,14 +41,21 @@ func (h *Hub) run() {
 				close(client.send)
 			}
 		case message := <-h.broadcast:
-			for client := range h.clients {
-				select {
-				case client.send <- message:
-				default:
-					close(client.send)
-					delete(h.clients, client)
-				}
-			}
+			fmt.Printf("%s\n", message)
+
+			// extract name value from message
+			var bodyJSON map[string]interface{}
+			json.Unmarshal([]byte(message), &bodyJSON)
+
+			/*input := PlayerInput{
+				Id:                bodyJSON["id"].(int),
+				NewTargetPosition: Location{X: bodyJSON["targetPosition"]["x"].(int), Y: bodyJSON["targetPosition"]["y"].(int)},
+			}*/
+
+			locationJSON := bodyJSON["targetPosition"].(map[string]interface{})
+			fmt.Printf("x: %f\n", locationJSON["x"].(float64))
+
+			fmt.Printf("id: %d\n", int(bodyJSON["id"].(float64)))
 		}
 	}
 }
