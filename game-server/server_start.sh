@@ -22,17 +22,16 @@ fi
 #
 sudo docker build -t boring_moba_server .
 
-# start server
+# start container
 #  --detach  Run container in background and print container ID
 #  --rm      Automatically remove the container when it exits
 #  --publish Describe which port the container is listening on at runtime
 #  --name    Assign a name to the container
-#  --mount   Attach a filesystem mount to the container
 #
 sudo docker run \
-     -d \
+     --detach \
      --rm \
-     -p 5000:5000 \
+     --publish 5000:80 \
      --name boring_moba_server \
      boring_moba_server
 

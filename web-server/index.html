@@ -24,7 +24,7 @@
 
   <!-- Scripts
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="site/scripts/web-socket.js" defer></script>
+  <script src="site/scripts/render-game.js" defer></script>
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -43,22 +43,15 @@
       <a class="button button-primary" href="../../index.html">Return home</a>
     </section>
 
-    <table>
-      <tr>
-        <td valign="top" width="50%">
-          <p>Click "Open" to create a connection to the server, "Send" to send a message to the server and "Close" to close the connection. You can change the message and send multiple times.</p>
-              <form>
-                <button id="open">Open</button>
-                <button id="close">Close</button>
-                <p><input id="input" type="text" value="Hello world!">
-                  <button id="send">Send</button>
-              </form>
-        </td>
-        <td valign="top" width="50%">
-          <div id="output"></div>
-        </td>
-      </tr>
-    </table>
+    <canvas id="gameCanvas" width="640" height="360" oncontextmenu="return false"></canvas>
+
+    <span id="gameButtons">
+      <button id="connect">connect to game server</button>
+      <button id="disconnect">disconnect</button>
+    </span>
+
+    <p id="mouseDownStatus" style="text-align: center"></p>
+    <p id="gameConnectionStatus" style="text-align: center"></p>
 
   </div>
 
