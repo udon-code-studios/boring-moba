@@ -14,7 +14,7 @@ func main() {
 	go game.run()
 
 	// create and run a Hub instance
-	hub := newHub()
+	hub := newHub(game)
 	go hub.run()
 
 	http.HandleFunc("/player-create", func(w http.ResponseWriter, r *http.Request) { playerCreatePost(game, w, r) })
@@ -55,7 +55,7 @@ func playerCreatePost(g *Game, w http.ResponseWriter, r *http.Request) {
 		LastUpdateTime:  int(time.Now().UnixNano() / 1000000),
 		CurrentPosition: Location{X: 100, Y: 100},
 		TargetPosition:  Location{X: 100, Y: 100},
-		MoveSpeed:       100,
+		MoveSpeed:       200,
 	}
 	g.GameState.Players = append(g.GameState.Players, newPlayer)
 

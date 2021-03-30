@@ -61,6 +61,7 @@ func (g *Game) handlePlayerInput() {
 			for i := 0; i < len(g.GameState.Players); i++ {
 				if g.GameState.Players[i].Id == input.Id {
 					g.GameState.Players[i].TargetPosition = input.NewTargetPosition
+					g.GameState.Players[i].LastUpdateTime = int(time.Now().UnixNano() / 1000000)
 				}
 			}
 		}

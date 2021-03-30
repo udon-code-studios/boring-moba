@@ -14,7 +14,11 @@ func (loc1 Location) distance(loc2 Location) int {
 }
 
 func (loc1 Location) direction(loc2 Location) float64 {
-	return math.Atan(float64(loc2.Y-loc1.Y) / float64(loc2.X-loc1.X))
+	if loc2.X < loc1.X {
+		return math.Atan(float64(loc2.Y-loc1.Y)/float64(loc2.X-loc1.X)) + math.Pi
+	} else {
+		return math.Atan(float64(loc2.Y-loc1.Y) / float64(loc2.X-loc1.X))
+	}
 }
 
 type Player struct {

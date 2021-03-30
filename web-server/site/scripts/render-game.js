@@ -7,7 +7,6 @@ var player;
 var players;
 
 function draw() {
-  console.log(players)
   // clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -20,7 +19,7 @@ function draw() {
 
     ctx.font = "16px Arial";
     ctx.fillStyle = "#0095DD";
-    ctx.fillText(players[i].name, players[i].currentPosition.x - 5, players[i].currentPosition.y - 16);
+    ctx.fillText(players[i].displayName, players[i].currentPosition.x - 5, players[i].currentPosition.y - 16);
   }
 }
 
@@ -51,10 +50,8 @@ document.getElementById("connect").onclick = function(evt) {
   ws.onmessage = function(evt) {
     var messageData = JSON.parse(evt.data);
     console.log(messageData);
-    if (messageData.type == "players") {
-      players = messageData.players;
-      draw();
-    }
+    players = messageData.players;
+    draw();
   }
 
   ws.onerror = function(evt) {
@@ -109,7 +106,7 @@ async function getPlayerID(data) {
 
 function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
+    const x = Math.round(event.clientX - rect.left)
+    const y = Math.round(event.clientY - rect.top)
     return {'x': x, 'y': y}
 }
