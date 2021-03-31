@@ -7,20 +7,25 @@ import (
 
 // Game maintains current game instance data and recieves player input data from the Hub.
 type Game struct {
+	// all game state data
 	GameState GameState
 
+	// channel of PlayerInput structs to be processed
 	PlayerInputs chan PlayerInput
+
+	// channel of player IDs to remove from game
+	RemovePlayers chan int
 }
 
 func newGame() *Game {
 	return &Game{
-		PlayerInputs: make(chan PlayerInput),
+		PlayerInputs:  make(chan PlayerInput),
+		RemovePlayers: make(chan int),
 	}
 }
 
 func (g *Game) run() {
 	go g.updateGameState()
-	go g.handlePlayerInput()
 }
 
 func (g *Game) updateGameState() {
@@ -51,19 +56,37 @@ func (g *Game) updateGameState() {
 				}
 			}
 		}
+
+		g.handlePlayerInput()
+		g.removePlayer()
 	}
 }
 
 func (g *Game) handlePlayerInput() {
-	for {
-		select {
-		case input := <-(g.PlayerInputs):
-			for i := 0; i < len(g.GameState.Players); i++ {
-				if g.GameState.Players[i].Id == input.Id {
-					g.GameState.Players[i].TargetPosition = input.NewTargetPosition
-					g.GameState.Players[i].LastUpdateTime = int(time.Now().UnixNano() / 1000000)
-				}
+	select {
+	case input := <-g.PlayerInputs:
+		for i := 0; i < len(g.GameState.Players); i++ {
+			if g.GameState.Players[i].Id == input.Id {
+				g.GameState.Players[i].TargetPosition = input.NewTargetPosition
+				g.GameState.Players[i].LastUpdateTime = int(time.Now().UnixNano() / 1000000)
 			}
 		}
+	default: // do nothing
+	}
+}
+
+func (g *Game) removePlayer() {
+	select {
+	case id := <-g.RemovePlayers:
+		for i, player := range g.GameState.Players {
+			if player.Id == id {
+				// swap player to be removed to end of slice
+				g.GameState.Players[i] = g.GameState.Players[len(g.GameState.Players)-1]
+
+				// remove last player
+				g.GameState.Players = g.GameState.Players[:len(g.GameState.Players)-1]
+			}
+		}
+	default: // do nothing
 	}
 }

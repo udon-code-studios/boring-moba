@@ -55,7 +55,7 @@ func playerCreatePost(g *Game, w http.ResponseWriter, r *http.Request) {
 		LastUpdateTime:  int(time.Now().UnixNano() / 1000000),
 		CurrentPosition: Location{X: 100, Y: 100},
 		TargetPosition:  Location{X: 100, Y: 100},
-		MoveSpeed:       200,
+		MoveSpeed:       250,
 	}
 	g.GameState.Players = append(g.GameState.Players, newPlayer)
 

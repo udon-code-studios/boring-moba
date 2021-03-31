@@ -11,6 +11,7 @@ import (
 // Hub maintains the set of active clients and broadcasts messages to the
 // clients.
 type Hub struct {
+	// Game which clients interact with
 	game *Game
 
 	// Registered clients.
@@ -59,24 +60,30 @@ func (h *Hub) run() {
 				h.clients[client] = true
 			case client := <-h.unregister:
 				if _, ok := h.clients[client]; ok {
+					// remove player from game
+					h.game.RemovePlayers <- client.id
+
+					// remove client from hub
 					delete(h.clients, client)
 					close(client.send)
 				}
 			case message := <-h.broadcast:
-				fmt.Printf("%s\n", message)
-
-				// extract values from message
+				// extract expected values from message
 				json, _ := jason.NewObjectFromBytes([]byte(message))
 				id, _ := json.GetInt64("id")
 				x, _ := json.GetInt64("newTargetPosition", "x")
 				y, _ := json.GetInt64("newTargetPosition", "y")
+
+				// print read values
 				fmt.Printf("PlayerInput: {id: %d, {x: %d, y: %d}}\n", id, x, y)
 
+				// create PlayerInput struct
 				input := PlayerInput{
 					Id:                int(id),
 					NewTargetPosition: Location{X: int(x), Y: int(y)},
 				}
 
+				// send player input to game
 				h.game.PlayerInputs <- input
 			}
 		}

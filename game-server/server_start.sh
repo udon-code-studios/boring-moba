@@ -29,8 +29,8 @@ sudo docker build -t boring_moba_server .
 #  --name    Assign a name to the container
 #
 sudo docker run \
-     --detach \
      --rm \
+     --detach \
      --publish 5000:80 \
      --name boring_moba_server \
      boring_moba_server

@@ -31,34 +31,31 @@ var wsConnected;
 document.getElementById("connect").onclick = function(evt) {
   getPlayerID({ 'name': 'Linus Torvalds' })
     .then(data => {
-      console.log(data);
       player = data;
+
+      ws = new WebSocket(`ws://subparprogramming.cf:5000/player-input-ws?id=${player.id}`);
+
+      ws.onopen = function(event) {
+        document.getElementById("gameConnectionStatus").innerHTML = 'Connected';
+        wsConnected = true;
+      };
+
+      ws.onclose = function(evt) {
+        document.getElementById("gameConnectionStatus").innerHTML = 'Disconnected';
+        ws = null;
+      }
+
+      ws.onmessage = function(evt) {
+        var messageData = JSON.parse(evt.data);
+        players = messageData.players;
+        draw();
+      }
+
+      ws.onerror = function(evt) {
+        //print("ERROR: " + evt.data);
+      }
     });
-
-  ws = new WebSocket("ws://subparprogramming.cf:5000/player-input-ws");
-
-  ws.onopen = function(event) {
-    document.getElementById("gameConnectionStatus").innerHTML = 'Connected';
-    wsConnected = true;
-  };
-
-  ws.onclose = function(evt) {
-    document.getElementById("gameConnectionStatus").innerHTML = 'Disconnected';
-    ws = null;
-  }
-
-  ws.onmessage = function(evt) {
-    var messageData = JSON.parse(evt.data);
-    console.log(messageData);
-    players = messageData.players;
-    draw();
-  }
-
-  ws.onerror = function(evt) {
-    //print("ERROR: " + evt.data);
-  }
-
-  return false;
+  //return false;
 };
 
 // disconnect from game server
@@ -84,7 +81,7 @@ document.addEventListener("mousedown", e => {
       console.log(location)
       document.getElementById("mouseDownStatus").innerHTML = 'Right button clicked.';
       if (wsConnected) {
-        ws.send(JSON.stringify({'id': player.id, 'newTargetPosition': location}));
+        ws.send(JSON.stringify({ 'id': player.id, 'newTargetPosition': location }));
       }
       break;
     default:
@@ -105,8 +102,8 @@ async function getPlayerID(data) {
 }
 
 function getCursorPosition(canvas, event) {
-    const rect = canvas.getBoundingClientRect()
-    const x = Math.round(event.clientX - rect.left)
-    const y = Math.round(event.clientY - rect.top)
-    return {'x': x, 'y': y}
+  const rect = canvas.getBoundingClientRect()
+  const x = Math.round(event.clientX - rect.left)
+  const y = Math.round(event.clientY - rect.top)
+  return { 'x': x, 'y': y }
 }
